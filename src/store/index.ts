@@ -1,10 +1,9 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { Action, combineReducers } from "@reduxjs/toolkit";
-import { ThunkAction } from "redux-thunk";
-import counterReducer from "./features/counter/CounterSlice";
+import { combineReducers } from "@reduxjs/toolkit";
+import worldReducer from "./world.reducer";
 
 export const rootReducer = combineReducers({
-  counter: counterReducer,
+  world: worldReducer,
 });
 
 const store = configureStore({
@@ -13,7 +12,9 @@ const store = configureStore({
 });
 
 export type RootState = ReturnType<typeof rootReducer>;
-export type AppThunk = ThunkAction<void, RootState, null, Action<string>>;
 export type AppDispatch = typeof store.dispatch;
+
+import * as Actions from "./world.actions";
+export { Actions };
 
 export default store;
