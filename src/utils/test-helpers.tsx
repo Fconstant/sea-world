@@ -2,14 +2,13 @@ import { render } from "@testing-library/react";
 import React from "react";
 import { Provider } from "react-redux";
 import configureStore from "redux-mock-store";
-import thunk from "redux-thunk";
-import { initialState as counterInitialState } from "features/counter/CounterSlice";
+import { initialState } from "store/world.reducer";
 import { RootState } from "store";
 
-const mockStore = configureStore([thunk]);
+const mockStore = configureStore([]);
 
 export const rootInitialState = {
-  counter: counterInitialState,
+  world: initialState,
 };
 
 export const renderWithRedux = (
