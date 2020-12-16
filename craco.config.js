@@ -10,4 +10,11 @@ module.exports = {
   babel: {
     plugins: emotionBabelPreset.plugins,
   },
+  jest: {
+    configure: {
+      globals: {
+        CONFIG: true,
+      },
+    },
+  },
 };

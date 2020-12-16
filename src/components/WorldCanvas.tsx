@@ -3,7 +3,7 @@ import styled from "@emotion/styled";
 import { WorldTile } from "./WorldTile";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "store";
-import { get as lodashGet, findIndex } from "lodash-es";
+import { get as lodashGet } from "lodash-es";
 import { Actions } from "store/world.reducer";
 import { Coords, WorldTileType } from "world.model";
 
