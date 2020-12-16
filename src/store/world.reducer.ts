@@ -13,8 +13,8 @@ interface WorldState {
 
 export const initialState: WorldState = {
   worldSize: {
-    x: 10,
-    y: 10,
+    x: 16,
+    y: 8,
   },
   tileCoords: {},
 };
@@ -64,13 +64,14 @@ export const reducer = createReducer(initialState, (builder) =>
         state = { ...initialState };
       }
       const worldSize = action.payload?.worldSize;
+      console.log(worldSize);
       if (worldSize) {
         const prunedTileCoords = pickBy(
-          mapValues(state.tileCoords, (ycoord, x) => {
-            if (worldSize.x - 1 < parseInt(x)) return undefined;
+          mapValues(state.tileCoords, (ycoordVal, x) => {
+            if (parseInt(x) > worldSize.x - 1) return undefined;
             return pickBy(
-              mapValues(ycoord, (type, y) =>
-                worldSize.y - 1 < parseInt(y) ? type : undefined
+              mapValues(ycoordVal, (type, y) =>
+                parseInt(y) <= worldSize.y - 1 ? type : undefined
               ),
               identity
             );
@@ -78,10 +79,8 @@ export const reducer = createReducer(initialState, (builder) =>
           identity
         ) as WorldState["tileCoords"];
 
-        state = {
-          tileCoords: prunedTileCoords,
-          worldSize,
-        };
+        state.tileCoords = prunedTileCoords;
+        state.worldSize = worldSize;
       }
     })
 );

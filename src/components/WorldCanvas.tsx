@@ -6,6 +6,7 @@ import { RootState } from "store";
 import { get as lodashGet } from "lodash-es";
 import { Actions } from "store/world.reducer";
 import { Coords, WorldTileType } from "world.model";
+import useStrictSelector from "utils/useStrictSelector";
 
 export type WorldCanvasProps = {
   enabled?: boolean;
@@ -22,17 +23,18 @@ const TileRow = styled.tr`
 `;
 
 const TileColumn = styled.td`
-  margin: 0;
-  padding: 0;
+  padding: 5px;
 `;
 
 const tilesEnum: WorldTileType[] = ["water", "dirt", "grass"];
 const cycleTileType = (current: WorldTileType) =>
   tilesEnum[(tilesEnum.findIndex((c) => c === current) + 1) % tilesEnum.length];
 
-export const WorldCanvas: React.FC<WorldCanvasProps> = (props) => {
+export const WorldCanvas: React.FC<WorldCanvasProps> = () => {
   const worldSize = useSelector((state: RootState) => state.world.worldSize);
-  const coords = useSelector((state: RootState) => state.world.tileCoords);
+  const coords = useStrictSelector(
+    (state: RootState) => state.world.tileCoords
+  );
   const dispatch = useDispatch();
 
   const onSwichType = (itemCoord: Coords) => () => {
@@ -43,24 +45,23 @@ export const WorldCanvas: React.FC<WorldCanvasProps> = (props) => {
         tileType: cycleTileType(type),
       },
     });
-    console.log(action);
     dispatch(action);
   };
 
   return (
     <WorldGrid>
-      {Array(worldSize.x)
+      {Array(worldSize.y)
         .fill(0)
-        .map((_, i) => (
-          <TileRow key={`world_row:${i}`}>
-            {Array(worldSize.y)
+        .map((_, yCoord) => (
+          <TileRow key={`world_row:${yCoord}`}>
+            {Array(worldSize.x)
               .fill(0)
-              .map((_, j) => {
-                const type = lodashGet(coords, [i, j]);
+              .map((_, xCoord) => {
+                const type = lodashGet(coords, [xCoord, yCoord]);
                 return (
-                  <TileColumn key={`world_tile:${j}`}>
+                  <TileColumn key={`world_tile:${xCoord}`}>
                     <WorldTile
-                      onSwitchType={onSwichType({ x: i, y: j })}
+                      onSwitchType={onSwichType({ x: xCoord, y: yCoord })}
                       type={type}
                     />
                   </TileColumn>

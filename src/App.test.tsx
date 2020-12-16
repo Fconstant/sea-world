@@ -1,9 +1,5 @@
-// import React from "react";
-// import { render, screen } from "@testing-library/react";
-// import App from "./App";
+import test from "ava";
 
-// test("renders initial count", () => {
-//   render(<App />);
-//   const zero = screen.getByText("0");
-//   expect(zero).toBeInTheDocument();
-// });
+test("pass 2", (t) => {
+  t.pass();
+});

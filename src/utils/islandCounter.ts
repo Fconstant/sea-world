@@ -68,13 +68,17 @@ function extractTileNode(coordMap: CoordMap) {
   }
 
   let nodeX: string | undefined;
+  let isNodeEmpty = false;
   do {
     nodeX = Object.keys(coordMap)[0];
-    if (isEmpty(coordMap[nodeX])) {
-      delete coordMap[nodeX];
-      nodeX = undefined;
+    if (!nodeX) {
+      return null;
     }
-  } while (!nodeX);
+
+    if ((isNodeEmpty = isEmpty(coordMap[nodeX]))) {
+      delete coordMap[nodeX];
+    }
+  } while (isNodeEmpty);
 
   const nodeY = Object.keys(coordMap[nodeX])[0];
 
@@ -87,7 +91,7 @@ function extractTileNode(coordMap: CoordMap) {
   } as Coords;
 }
 
-export default function getIslandCount(coordMap: CoordMap) {
+export function getIslandCount(coordMap: CoordMap) {
   // it should be mutable so it will be cloned
   const clonedCoordMap: CoordMap = cloneDeep(coordMap);
 

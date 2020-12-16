@@ -1,1 +1,5 @@
-export const a = 2;
+import test from "ava";
+
+test("pass", (t) => {
+  t.pass();
+});

@@ -4,23 +4,18 @@ import styled from "@emotion/styled";
 import DirtTexture from "../assets/dirt_texture.jpeg";
 import WaterTexture from "../assets/water_texture.jpg";
 import GrassTexture from "../assets/grass_texture.jpg";
+import { Card } from "./Card";
 
 export type WorldTileProps = {
   type?: "dirt" | "grass" | "water";
   onSwitchType?: () => void;
 };
 
-const Tile = styled.div`
-  width: 100%;
+const Tile = styled(Card)`
   height: 100%;
-  cursor: pointer;
-  border: 1px solid #333;
-  text-align: center;
-`;
-
-const BgImg = styled.img`
   width: 100%;
-  background-repeat: repeat;
+  cursor: pointer;
+  text-align: center;
 `;
 
 export const WorldTile: React.FC<WorldTileProps> = (props) => {
@@ -37,7 +32,6 @@ export const WorldTile: React.FC<WorldTileProps> = (props) => {
       }}
       onClick={(e) => {
         e.preventDefault();
-        console.log("click");
         props.onSwitchType?.call(this);
       }}
     ></Tile>
