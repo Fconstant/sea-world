@@ -2,8 +2,8 @@ import React from "react";
 import { Provider } from "react-redux";
 import store from "./store";
 import styled from "@emotion/styled";
-import { WorldCanvas } from "components/WorldCanvas";
-import { Controls } from "components/Controls";
+import { WorldCanvas } from "features/world";
+import { Controls } from "features/controls";
 
 const Container = styled.div`
   text-align: center;
@@ -15,11 +15,13 @@ const Container = styled.div`
 `;
 
 const ControlsContainer = styled.div`
-  flex-grow: 1;
+  height: auto;
   width: 100%;
+  margin-bottom: 8px;
 `;
 
 const WorldContainer = styled.div`
+  margin-top: 4px;
   flex-grow: 5;
   width: 100%;
 `;

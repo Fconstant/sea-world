@@ -4,10 +4,8 @@ import { getIslandCount } from "utils/islandCounter";
 import styled from "@emotion/styled";
 import useStrictSelector from "utils/useStrictSelector";
 
-const Container = styled.div`
-  position: fixed;
-  top: 5;
-  right: 5;
+const IslandCounter = styled.div`
+  font-size: 24px;
 `;
 
 export const WorldStats: React.FC = () => {
@@ -17,5 +15,11 @@ export const WorldStats: React.FC = () => {
 
   const islandCount = getIslandCount(coords);
 
-  return <p>{islandCount}</p>;
+  return (
+    <IslandCounter>
+      {islandCount
+        ? `Number of islands on your World: ${islandCount}`
+        : "No islands found on your World"}
+    </IslandCounter>
+  );
 };

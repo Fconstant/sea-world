@@ -7,8 +7,6 @@ import axios from "axios";
 import { fetchInitial } from "./CounterSlice";
 
 jest.mock("axios");
-const mockedAxios = axios as jest.Mocked<typeof axios>;
-
 describe("<Counter />", () => {
   test("shows zero as initial value", () => {
     renderWithRedux(<Counter />);

@@ -1,47 +1,35 @@
 import React, { useEffect, useRef, useState } from "react";
-import styled from "@emotion/styled";
+
 import { css } from "@emotion/core";
-import { WorldStats } from "./WorldStats";
-import { Card } from "./Card";
+import styled from "@emotion/styled";
+import { Row } from "components/Flex";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "store";
 import { debounce } from "lodash-es";
 import { Coords } from "world.model";
 import { Actions } from "store/world.reducer";
-
-const Row = styled.div`
-  display: flex;
-  flex-direction: row;
-`;
-
-const Container = styled(Row)`
-  height: 100%;
-  padding: 5px;
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
-`;
+import { RootState } from "store";
 
 const thumbCss = css`
   -webkit-appearance: none;
   appearance: none;
-  width: 20px;
-  height: 20px;
-  border-radius: 25px;
+  width: 30px;
+  height: 30px;
+  border-radius: 30px;
   background: #222;
-  border: solid #829 2px;
+  border: solid #eee 2px;
   cursor: pointer;
 `;
 
 const RangeStyled = styled.input`
   appearance: none;
   -webkit-appearance: none;
-  background: linear-gradient(45deg, #489, #829, #c49);
-  border-radius: 10px;
-  width: 100%;
-  height: 8px;
+  background: #bbb;
+  border-radius: 4px;
+  height: 10px;
+  width: 200px;
   margin: 8px;
   outline: none;
+  flex-grow: 1;
   &::-webkit-slider-thumb {
     ${thumbCss}
   }
@@ -51,11 +39,13 @@ const RangeStyled = styled.input`
 `;
 
 const RangeCounter = styled.div`
-  border-radius: 20px;
-  height: 20px;
-  width: 20px;
-  margin: 8px;
-  background-color: linear-gradient(45deg, #489, #829, #c49);
+  font-size: 24px;
+  width: 50px;
+`;
+
+const RangeLabel = styled.div`
+  font-size: 24px;
+  width: 100px;
 `;
 
 const Range: React.FC<{
@@ -65,8 +55,8 @@ const Range: React.FC<{
   onChange?: (val: number) => void;
 }> = (props) => {
   return (
-    <Row>
-      <label>{props.label}</label>
+    <Row style={{ alignItems: "center", height: "50px" }}>
+      <RangeLabel>{props.label}</RangeLabel>
       <RangeStyled
         type="range"
         onChange={(e) => {
@@ -83,7 +73,7 @@ const Range: React.FC<{
   );
 };
 
-export const Controls: React.FC = () => {
+export const WorldSizePanel: React.FC = () => {
   const worldSizeState = useSelector(
     (state: RootState) => state.world.worldSize
   );
@@ -110,22 +100,19 @@ export const Controls: React.FC = () => {
   useEffect(() => debounced.current(worldSize), [worldSize]);
 
   return (
-    <Container>
-      <Card>
-        <Range
-          label="X axis"
-          value={worldSize.x}
-          max={20}
-          onChange={onChange("x")}
-        />
-        <Range
-          label="Y axis"
-          value={worldSize.y}
-          max={20}
-          onChange={onChange("y")}
-        />
-      </Card>
-      <WorldStats />
-    </Container>
+    <>
+      <Range
+        label="X axis"
+        value={worldSize.x}
+        max={20}
+        onChange={onChange("x")}
+      />
+      <Range
+        label="Y axis"
+        value={worldSize.y}
+        max={20}
+        onChange={onChange("y")}
+      />
+    </>
   );
 };
