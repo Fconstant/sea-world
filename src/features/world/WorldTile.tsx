@@ -17,6 +17,19 @@ const Tile = styled(Card)`
   text-align: center;
   background-repeat: repeat;
   background-size: 200px 200px;
+  opacity: 0.8;
+  transition: all 0.2s ease-in-out;
+  z-index: 1;
+  &:hover {
+    opacity: 1;
+    transform: scale(1.05);
+    box-shadow: 2px 2px 4px 1px rgba(0, 0, 0, 0.3);
+    z-index: 2;
+  }
+  &:active {
+    transform: scale(1);
+    box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.3);
+  }
 `;
 
 export const WorldTile: React.FC<WorldTileProps> = (props) => {

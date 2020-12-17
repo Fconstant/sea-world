@@ -1,6 +1,5 @@
 # Author's Notes
 
-Hi! Thank you for tuning in.
 I'm writing this Readme to point out some things about this challenge ;)
 
 Install dependencies with:
