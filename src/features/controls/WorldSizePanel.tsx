@@ -6,7 +6,7 @@ import { Row } from "components/Flex";
 import { useDispatch, useSelector } from "react-redux";
 import { debounce } from "lodash-es";
 import { Coords } from "world.model";
-import { Actions } from "store/world.reducer";
+import { Actions } from "store";
 import { RootState } from "store";
 
 const thumbCss = css`
@@ -87,17 +87,23 @@ export const WorldSizePanel: React.FC = () => {
   };
 
   const dispatch = useDispatch();
+  const firstDebounce = useRef(true);
   const debounced = useRef(
     debounce((worldSize: Coords) => {
       dispatch(
         Actions.updateWorldProperties({
           worldSize,
-          cleanIt: false,
         })
       );
     }, 2000)
   );
-  useEffect(() => debounced.current(worldSize), [worldSize]);
+  useEffect(() => {
+    // This was created to debounced not be called at the first time
+    if (!firstDebounce.current) {
+      debounced.current(worldSize);
+    }
+    firstDebounce.current = false;
+  }, [worldSize.x, worldSize.y]);
 
   return (
     <>

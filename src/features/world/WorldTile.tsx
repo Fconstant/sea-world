@@ -1,10 +1,10 @@
 import React from "react";
 import styled from "@emotion/styled";
 
-import DirtTexture from "assets/dirt_texture.jpeg";
-import WaterTexture from "assets/water_texture.png";
-import GrassTexture from "assets/grass_texture.jpg";
+import Images from "assets/images";
+
 import { Card } from "components/Card";
+
 export type WorldTileProps = {
   type?: "dirt" | "grass" | "water";
   onSwitchType?: () => void;
@@ -22,12 +22,13 @@ const Tile = styled(Card)`
 export const WorldTile: React.FC<WorldTileProps> = (props) => {
   const whichImg =
     props.type === "dirt"
-      ? DirtTexture
+      ? Images.DirtTexture
       : props.type === "grass"
-      ? GrassTexture
-      : WaterTexture;
+      ? Images.GrassTexture
+      : Images.WaterTexture;
   return (
     <Tile
+      data-testid={`texture:${props.type}`}
       style={{
         backgroundImage: `url(${whichImg})`,
       }}

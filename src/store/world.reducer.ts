@@ -1,8 +1,9 @@
-import { createAction, createReducer } from "@reduxjs/toolkit";
-import { Coords, WorldTileCoords, WorldTileType } from "world.model";
-import { set, unset, mapValues, pickBy, identity } from "lodash-es";
+import { createReducer } from "@reduxjs/toolkit";
+import { Coords, WorldTileType } from "world.model";
+import { unset, mapValues, pickBy, identity } from "lodash-es";
+import { reset, switchTileType, updateWorldProperties } from "./world.actions";
 
-interface WorldState {
+export interface WorldState {
   worldSize: Coords;
   tileCoords: {
     [coordX: string]: {
@@ -18,13 +19,6 @@ export const initialState: WorldState = {
   },
   tileCoords: {},
 };
-
-const switchTileType = createAction<{ coords: WorldTileCoords }>("SWITCH_TYPE");
-const updateWorldProperties = createAction<{
-  worldSize?: Coords;
-  cleanIt?: boolean;
-}>("UPDATE_WORLD_PROPS");
-
 export class CoordsError extends Error {
   constructor(cardinal: "x" | "y", val: number) {
     super(
@@ -60,31 +54,26 @@ export const reducer = createReducer(initialState, (builder) =>
     })
 
     .addCase(updateWorldProperties, (state, action) => {
-      if (action.payload?.cleanIt) {
-        state = { ...initialState };
-      }
-      const worldSize = action.payload?.worldSize;
-      console.log(worldSize);
-      if (worldSize) {
-        const prunedTileCoords = pickBy(
-          mapValues(state.tileCoords, (ycoordVal, x) => {
-            if (parseInt(x) > worldSize.x - 1) return undefined;
-            return pickBy(
-              mapValues(ycoordVal, (type, y) =>
-                parseInt(y) <= worldSize.y - 1 ? type : undefined
-              ),
-              identity
-            );
-          }),
-          identity
-        ) as WorldState["tileCoords"];
+      const worldSize = action.payload.worldSize;
 
-        state.tileCoords = prunedTileCoords;
-        state.worldSize = worldSize;
-      }
+      // remove out of bounds tileCoords
+      const prunedTileCoords = pickBy(
+        mapValues(state.tileCoords, (ycoordVal, x) => {
+          if (parseInt(x) > worldSize.x - 1) return undefined;
+          return pickBy(
+            mapValues(ycoordVal, (type, y) =>
+              parseInt(y) <= worldSize.y - 1 ? type : undefined
+            ),
+            identity
+          );
+        }),
+        identity
+      ) as WorldState["tileCoords"];
+
+      return { tileCoords: prunedTileCoords, worldSize };
     })
-);
 
-export const Actions = { switchTileType, updateWorldProperties };
+    .addCase(reset, () => initialState)
+);
 
 export default reducer;

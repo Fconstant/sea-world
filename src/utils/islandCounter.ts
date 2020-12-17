@@ -32,6 +32,9 @@ function extractTile(
   } else return null;
 }
 
+/**
+ * It uses a recursive method to find out tile nodes
+ */
 function findAdjacentTiles(coords: Coords, coordMap: CoordMap) {
   let adjacentCount = 0;
 
@@ -82,7 +85,7 @@ function extractTileNode(coordMap: CoordMap) {
 
   const nodeY = Object.keys(coordMap[nodeX])[0];
 
-  // remove node from coordMap
+  // remove node from coordMap because it has already been found and analysed
   delete coordMap[nodeX][nodeY];
 
   return {
@@ -92,7 +95,7 @@ function extractTileNode(coordMap: CoordMap) {
 }
 
 export function getIslandCount(coordMap: CoordMap) {
-  // it should be mutable so it will be cloned
+  // this method applies mutable operations on the object, so it should be cloned beforehand
   const clonedCoordMap: CoordMap = cloneDeep(coordMap);
 
   let islandCount = 0;

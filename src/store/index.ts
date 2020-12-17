@@ -14,4 +14,7 @@ const store = configureStore({
 export type RootState = ReturnType<typeof rootReducer>;
 export type AppDispatch = typeof store.dispatch;
 
+import * as Actions from "./world.actions";
+export { Actions };
+
 export default store;

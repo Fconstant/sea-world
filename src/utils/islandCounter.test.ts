@@ -1,38 +1,17 @@
 import test from "ava";
 import { cloneDeep } from "lodash-es";
-import { getIslandCount, CoordMap } from "./islandCounter";
+import { getIslandCount } from "./islandCounter";
+
+import { tileCoordMap } from "__testUtils/coordMapForTests";
 
 /**
- * Desired map:
- *
- * . . . . .
- * . D . D .
- * . G . G .
- * . . G . .
- * . . . . .
- *
- * (dot) = water
- * D = dirt
- * G = grass
+ * The map of the tileCoord can be seen on "__testUtils/coordMapForTests.ts"
  */
-const initialState: CoordMap = {
-  "1": {
-    "1": "dirt",
-    "3": "dirt",
-  },
-  "2": {
-    "1": "grass",
-    "3": "dirt",
-  },
-  "3": {
-    "2": "grass",
-  },
-};
 
-let state: typeof initialState;
+let state: typeof tileCoordMap;
 
 test.beforeEach(() => {
-  state = cloneDeep(initialState);
+  state = cloneDeep(tileCoordMap);
 });
 
 test("initial island count to be 2", (t) => {
@@ -40,8 +19,34 @@ test("initial island count to be 2", (t) => {
   t.is(islandCount, 2);
 });
 
-test("modifying values should give only a single island", (t) => {
+test("adding a new tile on the middle should give only a single island", (t) => {
   state["2"]["2"] = "dirt";
+
+  /**
+   * After operation, the expected state should be:
+   * . . . . .
+   * . D . D .
+   * . G D G .
+   * . . G . .
+   * . . . . .
+   *
+   */
   const islandCount = getIslandCount(state);
   t.is(islandCount, 1);
+});
+
+test("island count should be zero after tiles within X=2 got pruned", (t) => {
+  delete state["2"];
+
+  /**
+   * After deletion, the expected state should be:
+   * . . . . .
+   * . D . D .
+   * . . . . .
+   * . . G . .
+   * . . . . .
+   *
+   */
+  const islandCount = getIslandCount(state);
+  t.is(islandCount, 0);
 });

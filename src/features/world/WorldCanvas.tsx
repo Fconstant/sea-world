@@ -1,10 +1,10 @@
 import React from "react";
 import styled from "@emotion/styled";
 import { WorldTile } from "./WorldTile";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { RootState } from "store";
 import { get as lodashGet } from "lodash-es";
-import { Actions } from "store/world.reducer";
+import { Actions } from "store";
 import { Coords, WorldTileType } from "world.model";
 import useStrictSelector from "utils/useStrictSelector";
 
@@ -31,7 +31,9 @@ const cycleTileType = (current: WorldTileType) =>
   tilesEnum[(tilesEnum.findIndex((c) => c === current) + 1) % tilesEnum.length];
 
 export const WorldCanvas: React.FC<WorldCanvasProps> = () => {
-  const worldSize = useSelector((state: RootState) => state.world.worldSize);
+  const worldSize = useStrictSelector(
+    (state: RootState) => state.world.worldSize
+  );
   const coords = useStrictSelector(
     (state: RootState) => state.world.tileCoords
   );
@@ -50,25 +52,30 @@ export const WorldCanvas: React.FC<WorldCanvasProps> = () => {
 
   return (
     <WorldGrid>
-      {Array(worldSize.y)
-        .fill(0)
-        .map((_, yCoord) => (
-          <TileRow key={`world_row:${yCoord}`}>
-            {Array(worldSize.x)
-              .fill(0)
-              .map((_, xCoord) => {
-                const type = lodashGet(coords, [xCoord, yCoord]);
-                return (
-                  <TileColumn key={`world_tile:${xCoord}`}>
-                    <WorldTile
-                      onSwitchType={onSwichType({ x: xCoord, y: yCoord })}
-                      type={type}
-                    />
-                  </TileColumn>
-                );
-              })}
-          </TileRow>
-        ))}
+      <tbody>
+        {Array(worldSize.y)
+          .fill(0)
+          .map((_, yCoord) => (
+            <TileRow key={`world_row:${yCoord}`}>
+              {Array(worldSize.x)
+                .fill(0)
+                .map((_, xCoord) => {
+                  const type = lodashGet(coords, [xCoord, yCoord]);
+                  return (
+                    <TileColumn
+                      data-testid={`tile:${xCoord}:${yCoord}`}
+                      key={`world_col:${xCoord}`}
+                    >
+                      <WorldTile
+                        onSwitchType={onSwichType({ x: xCoord, y: yCoord })}
+                        type={type}
+                      />
+                    </TileColumn>
+                  );
+                })}
+            </TileRow>
+          ))}
+      </tbody>
     </WorldGrid>
   );
 };
