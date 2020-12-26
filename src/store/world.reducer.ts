@@ -1,7 +1,12 @@
 import { createReducer } from "@reduxjs/toolkit";
 import { Coords, WorldTileType } from "world.model";
-import { unset, mapValues, pickBy, identity } from "lodash-es";
-import { reset, switchTileType, updateWorldProperties } from "./world.actions";
+import { unset, mapValues, pickBy, identity, isEmpty, get } from "lodash-es";
+import {
+  moveHero,
+  reset,
+  switchTileType,
+  updateWorldProperties,
+} from "./world.actions";
 
 export interface WorldState {
   worldSize: Coords;
@@ -10,6 +15,7 @@ export interface WorldState {
       [coordY: string]: WorldTileType;
     };
   };
+  heroPos?: Coords;
 }
 
 export const initialState: WorldState = {
@@ -45,7 +51,18 @@ export const reducer = createReducer(initialState, (builder) =>
 
       if (tileType == "water") {
         unset(state.tileCoords, [x, y]);
+        if (state.heroPos && state.heroPos.x === x && state.heroPos.y === y) {
+          // remove our hero on position aswell
+          delete state.heroPos;
+        }
       } else {
+        if (isEmpty(state.tileCoords)) {
+          // create a new hero on position
+          state.heroPos = {
+            x,
+            y,
+          };
+        }
         if (!state.tileCoords[x]) {
           state.tileCoords[x] = {};
         }
@@ -70,7 +87,35 @@ export const reducer = createReducer(initialState, (builder) =>
         identity
       ) as WorldState["tileCoords"];
 
-      return { tileCoords: prunedTileCoords, worldSize };
+      return {
+        heroPos: state.heroPos,
+        tileCoords: prunedTileCoords,
+        worldSize,
+      };
+    })
+
+    .addCase(moveHero, (state, action) => {
+      let projectedPos: Coords | undefined;
+      let targetTile: WorldTileType | undefined;
+
+      if ("vector" in action.payload && state.heroPos) {
+        const { x, y } = action.payload.vector;
+        const heroPos = state.heroPos;
+
+        projectedPos = {
+          x: heroPos.x + x,
+          y: heroPos.y + y,
+        };
+        targetTile = get(state.tileCoords, [projectedPos.x, projectedPos.y]);
+      }
+      if ("position" in action.payload) {
+        projectedPos = action.payload.position;
+        targetTile = get(state.tileCoords, [projectedPos.x, projectedPos.y]);
+      }
+
+      if (targetTile && projectedPos && targetTile !== "water") {
+        state.heroPos = projectedPos;
+      }
     })
 
     .addCase(reset, () => initialState)

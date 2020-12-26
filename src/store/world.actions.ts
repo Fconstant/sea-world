@@ -8,4 +8,13 @@ export const updateWorldProperties = createAction<{
   worldSize: Coords;
 }>("UPDATE_WORLD_PROPS");
 
+export const moveHero = createAction<
+  | {
+      position: Coords;
+    }
+  | {
+      vector: Coords;
+    }
+>("MOVE_HERO");
+
 export const reset = createAction("RESET");

@@ -80,10 +80,10 @@ export const WorldSizePanel: React.FC = () => {
   const [worldSize, setWorldSize] = useState(worldSizeState);
 
   const onChange = (axis: "x" | "y") => (val: number) => {
-    setWorldSize({
-      ...worldSize,
+    setWorldSize((old) => ({
+      ...old,
       [axis]: val,
-    });
+    }));
   };
 
   const dispatch = useDispatch();
